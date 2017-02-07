@@ -196,7 +196,11 @@ class Patch {
 		static $patchCommand = null;
 		if (!$patchCommand) {
 			$exitCode = $output = null;
-			$patchCommand = exec('which patch', $output, $exitCode);
+			if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+				$patchCommand = exec('where patch', $output, $exitCode);
+			} else {
+				$patchCommand = exec('which patch', $output, $exitCode);
+			}
 			if (0 !== $exitCode || !is_executable($patchCommand)) {
 				throw new Exception("Cannot find the 'patch' executable command - use your o/s package manager like 'sudo yum install patch'");
 			}
